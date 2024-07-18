@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const dbname = "authtest"
+const dbname = "thougthSocialMedialApp"
 const connectDB = async()=>{
       try {
            const connectionInstance = await mongoose.connect(`mongodb://localhost:27017/${dbname}`)

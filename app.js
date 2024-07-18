@@ -3,11 +3,11 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const connectDB = require("./db/index"); 
-const user = require("./models/user")
+const userModel = require("./models/user")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
-
+const postModel = require("./models/post");
 
 
 app.use(express.json());
@@ -24,22 +24,45 @@ app.get("/login",(req,res)=>{
 app.get("/singup",(req,res)=>{
     res.render("singup");
 });
-app.get("/profile",(req,res)=>{
+app.get("/profile",authenticated,async(req,res)=>{
 
-    let userdata = jwt.verify(req.cookies.token,"secret")
-    if(!userdata)res.send("something went wrong");
-    //  res.send(userdata);
-    res.render("profile",{user:userdata});
+    let user = await userModel.findOne({email:req.user.email}).populate("posts")
+
+    res.render("profile",{user:user});
 
 
 
 });
 
+app.post("/post",authenticated,async(req,res)=>{
+
+   let user = await userModel.findOne({email:req.user.email});
+   let post = await postModel.create({
+    content:req.body.content,
+    user:user._id
+   });
+   user.posts.push(post._id);
+   await user.save();
+   res.redirect("/profile")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post("/singup",(req,res)=>{
      let {name,username,email,password} = req.body;
      bcrypt.genSalt(10,(err,salt)=>{
         bcrypt.hash(password,salt, async(err,hash)=>{
-          let createdUser = await user.create({
+          let createdUser = await userModel.create({
             name,
             username,
             email,
@@ -48,10 +71,11 @@ app.post("/singup",(req,res)=>{
           })
           if (!createdUser)res.send("user not created plz. retry")
           
-            let token = jwt.sign({email},"secret");
+            let token = jwt.sign({name,username,email},"secret");
             res.cookie("token",token);
-
-            res.redirect("/profile",)
+            
+            res.redirect("/profile")
+            
 
         })
      })
@@ -60,7 +84,7 @@ app.post("/singup",(req,res)=>{
 app.post("/login", async(req,res)=>{
     let {username,password} = req.body;
     
-    let userdata = await user.findOne({username:username});
+    let userdata = await userModel.findOne({username:username});
     if(!userdata)res.send("invalid username or password")
     
     bcrypt.compare(password,userdata.password,(err,result)=>{
@@ -84,10 +108,18 @@ app.post("/login", async(req,res)=>{
 
 app.get("/logout",(req,res)=>{
     res.clearCookie("token");
-    res.redirect("/singup")
+    res.redirect("/login")
 })
 
+function authenticated(req,res,next) {
+   let token = req.cookies.token;
+   if (!token)res.redirect("/login");
+   let user = jwt.verify(token,"secret");
+   if (!user)res.send("invalid token");
+   req.user = user;
+   return next();
 
+}
 
 
 

@@ -18,6 +18,13 @@ const userSchema = Schema(
         required:true,
         type:String,
        },
+       posts:[
+        {
+            type:Schema.Types.ObjectId,
+             ref:"post"
+         }
+    ]
+          
 
     }
 )
