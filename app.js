@@ -45,6 +45,36 @@ app.post("/post",authenticated,async(req,res)=>{
    await user.save();
    res.redirect("/profile")
 })
+app.get("/edit/:id",authenticated,async(req,res)=>{
+   let post = await postModel.findOne({_id:req.params.id}).populate("user");
+   await post.save();
+   res.render("edit",{post});
+});
+app.post("/update/:id",authenticated,async(req,res)=>{
+    let post = await postModel.findOneAndUpdate({_id:req.params.id},{content:req.body.content}).populate("user");
+    await post.save();
+    if(!post)res.send("Error:post not update")
+        res.redirect("/profile");
+});
+app.get("/like/:id",authenticated,async(req,res)=>{
+   let post = await postModel.findOne({_id:req.params.id}).populate("user");
+
+    if(post.likes.indexOf(req.user.userid) === -1){
+        post.likes.push(req.user.userid);
+    }else{
+        post.likes.splice(post.likes.indexOf(req.user.userid),1)
+    }
+   await post.save();
+   res.redirect('/profile');
+    
+     
+
+});
+
+
+
+
+
 
 
 
@@ -71,7 +101,7 @@ app.post("/singup",(req,res)=>{
           })
           if (!createdUser)res.send("user not created plz. retry")
           
-            let token = jwt.sign({name,username,email},"secret");
+            let token = jwt.sign({name,username,email,userid:createdUser._id},"secret");
             res.cookie("token",token);
             
             res.redirect("/profile")
@@ -94,6 +124,7 @@ app.post("/login", async(req,res)=>{
            email: userdata.email,
            username: userdata.username,
            name: userdata.name,
+           userid:userdata._id,
         }
 
         let token = jwt.sign(payload,"secret");
