@@ -8,7 +8,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
 const postModel = require("./models/post");
-
+const multer = require("multer");
+const authenticated = require("./middlewares/authentication");
+const upload = require("./middlewares/multer");
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -70,6 +72,27 @@ app.get("/like/:id",authenticated,async(req,res)=>{
      
 
 });
+
+
+
+
+
+
+
+
+
+app.get("/profile/upload",(req,res)=>{
+     res.render("uploadProfile")
+})
+app.post("/upload",authenticated,upload.single("image"),async(req,res)=>{
+      
+    const user = await userModel.findOne({_id:req.user.userid})
+    user.profilepic = req.file.filename;
+    await user.save();
+
+     res.redirect("/profile")
+})
+
 
 
 
@@ -142,15 +165,7 @@ app.get("/logout",(req,res)=>{
     res.redirect("/login")
 })
 
-function authenticated(req,res,next) {
-   let token = req.cookies.token;
-   if (!token)res.redirect("/login");
-   let user = jwt.verify(token,"secret");
-   if (!user)res.send("invalid token");
-   req.user = user;
-   return next();
 
-}
 
 
 

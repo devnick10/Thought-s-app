@@ -18,6 +18,11 @@ const userSchema = Schema(
         required:true,
         type:String,
        },
+       profilepic:{
+        type:String,
+        default:"default.png"
+       }
+       ,
        posts:[
         {
             type:Schema.Types.ObjectId,
