@@ -11,7 +11,9 @@ const postModel = require("./models/post");
 const multer = require("multer");
 const authenticated = require("./middlewares/authentication");
 const upload = require("./middlewares/multer");
+const cacheControl = require("./middlewares/cacheControl");
 
+app.use(cacheControl);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
