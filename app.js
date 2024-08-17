@@ -74,6 +74,10 @@ app.get("/like/:id",authenticated,async(req,res)=>{
      
 
 });
+
+
+
+
 app.get("/profile/feed",authenticated,async(req,res)=>{
      
 const user = await userModel.findOne({_id:req.user.userid})
