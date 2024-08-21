@@ -150,11 +150,12 @@ app.post("/singup",(req,res)=>{
 app.post("/login", async(req,res)=>{
     let {username,password} = req.body;
     
+
     let userdata = await userModel.findOne({username:username});
-    if(!userdata)res.send("invalid username or password")
+    if(!userdata)res.send("Invalid Username OR Password");
     
     bcrypt.compare(password,userdata.password,(err,result)=>{
-        if(!result)res.send("invalid username or password");
+        if(!result)res.send("Invalid Username OR Password");
 
         const payload = {
            email: userdata.email,
