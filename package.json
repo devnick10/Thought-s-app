@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "watch:css": "npx tailwindcss -i ./public/stylesheets/tailwind.css -o ./public/stylesheets/tailwind-output.css --watch",
-    "dev": "nodemon -e js,ejs,css -x \"npm run watch:css && node app.js\""
+    "dev": "nodemon -e js,ejs,css -x \"npm run watch:css\""
 },
 
   "keywords": [],

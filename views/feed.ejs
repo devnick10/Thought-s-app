@@ -1,24 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
-    <link href="/stylesheets/tailwind-output.css" rel="stylesheet">
-
-</head>
-<body class="h-full w-full bg-zinc-900 text-white">
-    <div class="p-5 m-5">
-           <div class=" navabr mb-2 flex justify-between gap-5">
-               <div class="flex flex-row gap-1">
-                   <span><img class="h-8" src="/images/thought-bubble.png" alt="" srcset=""></span>
-                   <p>thought's</p>
-               </div>
-          <div>  <a class=" px-3 py-2 rounded-md text-sm mb-5 inline-block " href="/settings">settings</a>
-            <a class="bg-red-500 px-3 py-2 rounded-md text-sm mb-5 inline-block " href="/logout">logout</a></div>
-
-        </div>
+<%- include('partials/header') %>
         <a href="/profile" class=" inline-block  mb-3 text-small">🔙 home</a>
         <div class="flex gap-3 items-start  "> 
             <div class="overflow-hidden w-10 h-10">
@@ -61,5 +41,4 @@
        </div>
      
     <script src="/javascripts/script.js"></script>
-</body>
-</html>
+    <%- include('partials/footer') %>

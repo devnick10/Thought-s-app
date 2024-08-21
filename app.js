@@ -106,6 +106,12 @@ app.post("/upload",authenticated,upload.single("image"),async(req,res)=>{
      res.redirect("/profile")
 })
 
+app.get("/delete/:id",authenticated,async(req,res)=>{
+    let deletedPost = await postModel.findOneAndDelete({_id:req.params.id});
+    if(!deletedPost)res.send("Post deleting Faild Try Again");
+    res.redirect('/profile');
+
+ });
 
 
 
